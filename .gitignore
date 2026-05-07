@@ -19,6 +19,12 @@ client/dist/
 # Uploads
 server/uploads/
 
+# Test Documents
+test-docs/
+test_docs/
+*.md
+!README.md
+
 # Misc
 .DS_Store
 *.log
