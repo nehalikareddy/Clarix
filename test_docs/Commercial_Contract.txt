@@ -1,0 +1,15 @@
+# COMMERCIAL SERVICE PROVIDER AGREEMENT
+
+This Agreement is made on this day by and between "TechCorp India Pvt Ltd" (The Client) and "CloudServices LLC" (The Provider).
+
+## 1. SCOPE OF WORK
+The Provider agrees to supply 24/7 cloud hosting services with a guaranteed 99.9% uptime. 
+
+## 2. TERMINATION
+Either party may terminate this agreement with a 30-day written notice. However, if The Client terminates the agreement within the first 12 months, a penalty of $50,000 will be immediately payable to The Provider.
+
+## 3. INDEMNIFICATION AND LIABILITY
+The Provider's total liability shall not exceed the amount paid by the Client in the past one month. The Provider holds no responsibility for any data loss, security breaches, or total business collapse.
+
+## 4. OBLIGATIONS
+The Client is obligated to pay all invoices within 7 days. Late payments will incur an astronomical interest rate of 15% per day.
