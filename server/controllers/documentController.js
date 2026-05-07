@@ -43,7 +43,10 @@ exports.uploadDocument = async (req, res) => {
       riskScore: analysis.riskScore
     });
 
-    // 4. Delete temp file
+    // 4. Update User stats
+    await User.findByIdAndUpdate(req.user.id, { $inc: { docsUploaded: 1 } });
+
+    // 5. Delete temp file
     fs.unlinkSync(filePath);
 
     res.status(201).json(doc);
