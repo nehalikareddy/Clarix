@@ -101,9 +101,6 @@ npm run dev
 
 ---
 
-## 🤝 Contributing
-
-This project was built to explore AI-powered legal technology and modern full-stack architecture.
 
 Feel free to:
 
