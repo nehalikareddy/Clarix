@@ -102,8 +102,3 @@ npm run dev
 ---
 
 
-Feel free to:
-
-* Fork the repository
-* Improve features
-* Submit pull requests 🚀
