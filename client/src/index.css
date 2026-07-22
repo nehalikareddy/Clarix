@@ -826,11 +826,11 @@ a:hover {
 }
 
 .hero-section {
-  min-height: calc(100vh - 120px);
+  min-height: calc(100vh - 125px);
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 80px 12%;
+  padding: clamp(36px, 6vh, 80px) 10%;
   background: var(--bg-color);
   position: relative;
   overflow: hidden;
@@ -994,10 +994,10 @@ a:hover {
 }
 
 .hero-title {
-  font-size: 3.8rem;
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
   font-weight: 800;
   line-height: 1.08;
-  margin-bottom: 24px;
+  margin-bottom: clamp(16px, 2.5vh, 24px);
   color: var(--primary);
   letter-spacing: -2px;
 }
@@ -1007,17 +1007,17 @@ a:hover {
 }
 
 .hero-subtitle {
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 1.1vw, 1rem);
   color: var(--text-muted);
-  margin-bottom: 36px;
-  line-height: 1.75;
+  margin-bottom: clamp(20px, 3.5vh, 36px);
+  line-height: 1.7;
   max-width: 440px;
 }
 
 .hero-buttons {
   display: flex;
   gap: 12px;
-  margin-bottom: 40px;
+  margin-bottom: clamp(24px, 4vh, 40px);
   flex-wrap: wrap;
 }
 
@@ -1157,6 +1157,21 @@ a:hover {
 @media (max-width: 480px) {
   .hero-title { font-size: 2.2rem; }
   .hero-section { padding: 40px 5%; }
+}
+
+@media (max-height: 780px) {
+  .hero-section {
+    padding-top: 32px;
+    padding-bottom: 32px;
+    min-height: auto;
+  }
+}
+
+@media (max-height: 680px) {
+  .hero-eyebrow { margin-bottom: 12px; }
+  .hero-title { margin-bottom: 14px; }
+  .hero-subtitle { margin-bottom: 18px; }
+  .hero-buttons { margin-bottom: 20px; }
 }
 
 .features-section {
