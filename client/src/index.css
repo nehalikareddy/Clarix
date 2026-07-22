@@ -825,7 +825,9 @@ a:hover {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 65px);
+  height: calc(100dvh - 65px);
   max-height: calc(100vh - 65px);
+  max-height: calc(100dvh - 65px);
   overflow: hidden;
 }
 
