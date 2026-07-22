@@ -822,15 +822,19 @@ a:hover {
 
 /* Home Page */
 .home-container {
-  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 65px);
+  max-height: calc(100vh - 65px);
+  overflow: hidden;
 }
 
 .hero-section {
-  min-height: calc(100vh - 125px);
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: clamp(36px, 6vh, 80px) 10%;
+  padding: clamp(20px, 4vh, 60px) 10%;
   background: var(--bg-color);
   position: relative;
   overflow: hidden;
@@ -861,6 +865,7 @@ a:hover {
   align-items: center;
   overflow: hidden;
   height: 48px;
+  flex-shrink: 0;
   gap: 0;
 }
 
@@ -1141,6 +1146,11 @@ a:hover {
 
 /* Responsive */
 @media (max-width: 900px) {
+  .home-container {
+    height: auto;
+    max-height: none;
+    overflow-y: auto;
+  }
   .hero-section {
     flex-direction: column;
     padding: 60px 6%;
