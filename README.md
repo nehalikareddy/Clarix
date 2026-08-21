@@ -74,6 +74,8 @@ Create a `.env` file in the root directory:
 MONGO_URI=your_mongodb_connection
 JWT_SECRET=your_secret_key
 GEMINI_API_KEY=your_gemini_api_key
+GROQ_API_KEY=your_groq_api_key # (Optional backup fallback)
+GROQ_MODEL=llama-3.3-70b-versatile # (Optional, defaults to llama-3.3-70b-versatile)
 ```
 
 ---
