@@ -71,7 +71,7 @@ Return ONLY a valid JSON object. No markdown, no pre-amble.
       { role: 'system', content: systemPrompt },
       { role: 'user', content: `Document Text:\n"""\n${extractedText.slice(0, 30000)}\n"""` }
     ],
-    model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+    model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
     temperature: 0.2,
     response_format: { type: 'json_object' }
   });
@@ -105,7 +105,7 @@ ${documentText.slice(0, 20000)}
 
   const completion = await groq.chat.completions.create({
     messages,
-    model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+    model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
     temperature: 0.3
   });
 
