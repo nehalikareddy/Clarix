@@ -83,8 +83,8 @@ GEMINI_API_KEY=your_gemini_api_key
 ### 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/clarix.git
-cd clarix
+git clone https://github.com/nehalikareddy/Clarix.git
+cd Clarix
 ```
 
 ### 2️⃣ Install Dependencies
