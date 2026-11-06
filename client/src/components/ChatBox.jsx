@@ -23,7 +23,14 @@ function ChatBox({ docId, initialHistory }) {
 
     try {
       const res = await api.post(`/api/chat/${docId}`, { message: input });
-      setMessages(prev => [...prev, { role: 'model', content: res.data.reply }]);
+      setMessages(prev => [
+        ...prev,
+        {
+          role: 'model',
+          content: res.data.reply,
+          sources: res.data.sources || []
+        }
+      ]);
     } catch (err) {
       console.error(err);
       setMessages(prev => [...prev, { role: 'model', content: 'Sorry, an error occurred.' }]);
@@ -42,6 +49,26 @@ function ChatBox({ docId, initialHistory }) {
           <div key={i} className={`chat-message ${msg.role}`}>
             <div className="msg-bubble">
               <div className="msg-content">{msg.content}</div>
+              {msg.sources && msg.sources.length > 0 && (
+                <div style={{ marginTop: '10px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.1)', fontSize: '0.75rem', opacity: 0.9 }}>
+                  <span style={{ fontWeight: '600', marginRight: '6px' }}>📚 Cited Clauses:</span>
+                  {msg.sources.map((src, sIdx) => (
+                    <span
+                      key={sIdx}
+                      style={{
+                        display: 'inline-block',
+                        background: 'rgba(255, 255, 255, 0.12)',
+                        padding: '2px 8px',
+                        borderRadius: '12px',
+                        marginRight: '5px',
+                        marginBottom: '3px'
+                      }}
+                    >
+                      {src}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         ))}

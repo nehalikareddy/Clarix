@@ -12,6 +12,17 @@ test-docs/node_modules/
 .env.production.local
 client/.env
 server/.env
+ai-service/.env
+!.env.example
+!client/.env.example
+!server/.env.example
+!ai-service/.env.example
+
+# Python
+ai-service/venv/
+venv/
+**/__pycache__/
+*.pyc
 
 # Production
 client/dist/

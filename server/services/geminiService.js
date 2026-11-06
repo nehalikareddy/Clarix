@@ -1,10 +1,18 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const Groq = require('groq-sdk');
 
-function getGeminiModel() {
+const CANDIDATE_MODELS = [
+  'gemini-3.5-flash',
+  'gemini-2.5-flash-lite',
+  'gemini-2.5-flash',
+  'gemini-1.5-flash',
+  'gemini-flash-latest'
+];
+
+function getGeminiModel(modelName = 'gemini-3.5-flash') {
   if (!process.env.GEMINI_API_KEY) return null;
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  return genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+  return genAI.getGenerativeModel({ model: modelName });
 }
 
 function getGroqClient() {
@@ -112,15 +120,13 @@ ${documentText.slice(0, 20000)}
   return completion.choices[0]?.message?.content || '';
 }
 
-// ─── 1. ANALYZE DOCUMENT (with Groq fallback) ──────────────────────────────
+// ─── 1. ANALYZE DOCUMENT (with Multi-model Gemini fallback + Groq fallback) ───
 async function analyzeDocument(extractedText) {
   let geminiError = null;
 
-  // Try Gemini first
+  // Try candidate Gemini models
   if (process.env.GEMINI_API_KEY) {
-    try {
-      const model = getGeminiModel();
-      const prompt = `
+    const prompt = `
 You are an expert legal document analyst. A user has uploaded a legal document.
 Your job is to help non-lawyers understand it clearly and identify hidden risks.
 
@@ -163,14 +169,18 @@ Document Text:
 """
 ${extractedText.slice(0, 30000)}
 """
-      `;
+    `;
 
-      const result = await model.generateContent(prompt);
-      const raw = result.response.text();
-      return parseAnalysisJson(raw);
-    } catch (err) {
-      geminiError = err;
-      console.warn(`[AI Service] Gemini analysis failed (${err.message}). Attempting fallback to Groq...`);
+    for (const modelName of CANDIDATE_MODELS) {
+      try {
+        const model = getGeminiModel(modelName);
+        const result = await model.generateContent(prompt);
+        const raw = result.response.text();
+        return parseAnalysisJson(raw);
+      } catch (err) {
+        geminiError = err;
+        console.warn(`[AI Service] Gemini model '${modelName}' failed (${err.message}). Trying next candidate...`);
+      }
     }
   }
 
@@ -195,15 +205,13 @@ ${extractedText.slice(0, 30000)}
   throw new Error('No AI provider configured. Please set GEMINI_API_KEY or GROQ_API_KEY.');
 }
 
-// ─── 2. CHAT ABOUT DOCUMENT (with Groq fallback) ───────────────────────────
+// ─── 2. CHAT ABOUT DOCUMENT (with Multi-model Gemini fallback + Groq fallback) ───
 async function chatWithDocument(documentText, chatHistory, userQuestion) {
   let geminiError = null;
 
-  // Try Gemini first
+  // Try candidate Gemini models
   if (process.env.GEMINI_API_KEY) {
-    try {
-      const model = getGeminiModel();
-      const systemContext = `
+    const systemContext = `
 You are a legal assistant helping a user understand their legal document.
 Answer clearly and simply. Do not use legal jargon.
 If you do not know the answer from the document, say so honestly.
@@ -212,26 +220,30 @@ Document:
 """
 ${documentText.slice(0, 20000)}
 """
-      `;
+    `;
 
-      const history = chatHistory.map(msg => ({
-        role: msg.role === 'assistant' ? 'model' : msg.role,
-        parts: [{ text: msg.content }]
-      }));
+    const history = chatHistory.map(msg => ({
+      role: msg.role === 'assistant' ? 'model' : msg.role,
+      parts: [{ text: msg.content }]
+    }));
 
-      const chat = model.startChat({
-        history: [
-          { role: 'user', parts: [{ text: systemContext }] },
-          { role: 'model', parts: [{ text: 'Understood. I have read the document and I am ready to answer questions about it.' }] },
-          ...history
-        ]
-      });
+    for (const modelName of CANDIDATE_MODELS) {
+      try {
+        const model = getGeminiModel(modelName);
+        const chat = model.startChat({
+          history: [
+            { role: 'user', parts: [{ text: systemContext }] },
+            { role: 'model', parts: [{ text: 'Understood. I have read the document and I am ready to answer questions about it.' }] },
+            ...history
+          ]
+        });
 
-      const result = await chat.sendMessage(userQuestion);
-      return result.response.text();
-    } catch (err) {
-      geminiError = err;
-      console.warn(`[AI Service] Gemini chat failed (${err.message}). Attempting fallback to Groq...`);
+        const result = await chat.sendMessage(userQuestion);
+        return result.response.text();
+      } catch (err) {
+        geminiError = err;
+        console.warn(`[AI Service] Gemini chat with '${modelName}' failed (${err.message}). Trying next candidate...`);
+      }
     }
   }
 

@@ -29,7 +29,7 @@ exports.uploadDocument = async (req, res) => {
     // 1. Extract text from PDF
     const extractedText = await extractTextFromPDF(filePath);
 
-    // 2. Call Gemini
+    // 2. Call Gemini for overall document summary & risk analysis
     const analysis = await analyzeDocument(extractedText);
 
     // 3. Save to MongoDB
@@ -42,6 +42,22 @@ exports.uploadDocument = async (req, res) => {
       riskClauses: analysis.riskClauses,
       riskScore: analysis.riskScore
     });
+
+    // 3.5 Notify Python RAG microservice to index document chunks
+    try {
+      const aiServiceUrl = process.env.AI_SERVICE_URL || 'http://localhost:8000';
+      await fetch(`${aiServiceUrl}/index`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          doc_id: doc._id.toString(),
+          text: extractedText
+        })
+      });
+      console.log(`[RAG Service] Successfully queued document ${doc._id} for indexing.`);
+    } catch (ragErr) {
+      console.warn('[RAG Service] Microservice index skipped or failed:', ragErr.message);
+    }
 
     // 4. Update User stats
     await User.findByIdAndUpdate(req.user.id, { $inc: { docsUploaded: 1 } });
